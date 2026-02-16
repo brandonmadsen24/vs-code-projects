@@ -106,15 +106,184 @@ class World {
     }
 
     drawWorld(ctx, camera) {
-        // Background
-        ctx.fillStyle = '#1a1a1a';
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        // Tropical Paradise Background
+        this.drawTropicalBackground(ctx, camera);
 
-        // Grid
+        // Grid (subtle)
         this.drawGrid(ctx, camera);
+
+        // Palm trees and decorations
+        this.drawPalmTrees(ctx, camera);
 
         // Boss spawn indicators
         this.drawBossIndicators(ctx, camera);
+    }
+
+    drawTropicalBackground(ctx, camera) {
+        // Sky gradient (tropical blue)
+        const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+        gradient.addColorStop(0, '#87CEEB');  // Sky blue
+        gradient.addColorStop(0.6, '#B0E0E6'); // Powder blue
+        gradient.addColorStop(1, '#F0E68C');   // Khaki (sand transition)
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        // Sun
+        const sunX = ctx.canvas.width - 100;
+        const sunY = 80;
+        ctx.fillStyle = '#FFD700';
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = '#FFA500';
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, 40, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Clouds
+        this.drawClouds(ctx, camera);
+
+        // Ocean (visible in distance)
+        const horizon = ctx.canvas.height * 0.7;
+        const oceanGradient = ctx.createLinearGradient(0, horizon, 0, ctx.canvas.height);
+        oceanGradient.addColorStop(0, '#4682B4'); // Steel blue
+        oceanGradient.addColorStop(0.5, '#1E90FF'); // Dodger blue
+        oceanGradient.addColorStop(1, '#00BFFF');  // Deep sky blue
+        ctx.fillStyle = oceanGradient;
+        ctx.fillRect(0, horizon, ctx.canvas.width, ctx.canvas.height - horizon);
+
+        // Waves (animated)
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 2;
+        const waveOffset = (Date.now() * 0.05) % 100;
+        for (let y = horizon; y < ctx.canvas.height; y += 30) {
+            ctx.beginPath();
+            for (let x = -waveOffset; x < ctx.canvas.width + 100; x += 100) {
+                const wave = Math.sin((x + waveOffset) * 0.02) * 5;
+                if (x === -waveOffset) {
+                    ctx.moveTo(x, y + wave);
+                } else {
+                    ctx.lineTo(x, y + wave);
+                }
+            }
+            ctx.stroke();
+        }
+
+        // Sand (foreground)
+        const sandGradient = ctx.createRadialGradient(
+            ctx.canvas.width / 2, ctx.canvas.height / 2, 0,
+            ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.width
+        );
+        sandGradient.addColorStop(0, 'rgba(255, 248, 220, 0.3)');
+        sandGradient.addColorStop(1, 'rgba(244, 164, 96, 0.2)');
+        ctx.fillStyle = sandGradient;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+
+    drawClouds(ctx, camera) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        const cloudOffset = (camera.x * 0.1) % 300;
+
+        // Draw several clouds
+        for (let i = 0; i < 5; i++) {
+            const x = (i * 250 - cloudOffset) % (ctx.canvas.width + 200);
+            const y = 50 + i * 30;
+
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.arc(x + 30, y, 30, 0, Math.PI * 2);
+            ctx.arc(x + 60, y, 25, 0, Math.PI * 2);
+            ctx.arc(x + 30, y - 15, 25, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    drawPalmTrees(ctx, camera) {
+        const gridSize = 400;
+        const startX = Math.floor(camera.x / gridSize) * gridSize;
+        const startY = Math.floor(camera.y / gridSize) * gridSize;
+
+        // Draw palm trees at grid intersections
+        for (let x = startX - gridSize; x < camera.x + ctx.canvas.width + gridSize; x += gridSize) {
+            for (let y = startY - gridSize; y < camera.y + ctx.canvas.height + gridSize; y += gridSize) {
+                // Only draw some trees (not every intersection)
+                if ((x + y) % 800 === 0) {
+                    const screenX = x - camera.x;
+                    const screenY = y - camera.y;
+                    this.drawPalmTree(ctx, screenX, screenY);
+                }
+            }
+        }
+    }
+
+    drawPalmTree(ctx, x, y) {
+        // Trunk
+        ctx.strokeStyle = '#8B4513';
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 5, y - 60);
+        ctx.stroke();
+
+        // Horizontal lines on trunk
+        ctx.strokeStyle = '#654321';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.arc(x + 2, y - i * 12, 5, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        // Palm fronds
+        ctx.strokeStyle = '#228B22';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+
+        const fronds = 8;
+        for (let i = 0; i < fronds; i++) {
+            const angle = (i / fronds) * Math.PI * 2;
+            const length = 40;
+
+            ctx.beginPath();
+            ctx.moveTo(x + 5, y - 60);
+            ctx.quadraticCurveTo(
+                x + 5 + Math.cos(angle) * length * 0.6,
+                y - 60 + Math.sin(angle) * length * 0.6 - 10,
+                x + 5 + Math.cos(angle) * length,
+                y - 60 + Math.sin(angle) * length
+            );
+            ctx.stroke();
+
+            // Frond details
+            ctx.strokeStyle = '#32CD32';
+            ctx.lineWidth = 2;
+            for (let j = 0; j < 3; j++) {
+                const t = (j + 1) / 4;
+                const px = x + 5 + Math.cos(angle) * length * t;
+                const py = y - 60 + Math.sin(angle) * length * t - 10 * (1 - t);
+
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(px + Math.cos(angle + Math.PI / 2) * 8, py + Math.sin(angle + Math.PI / 2) * 8);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(px + Math.cos(angle - Math.PI / 2) * 8, py + Math.sin(angle - Math.PI / 2) * 8);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#228B22';
+            ctx.lineWidth = 4;
+        }
+
+        // Coconuts
+        ctx.fillStyle = '#8B4513';
+        ctx.beginPath();
+        ctx.arc(x + 8, y - 55, 4, 0, Math.PI * 2);
+        ctx.arc(x + 2, y - 58, 4, 0, Math.PI * 2);
+        ctx.arc(x + 10, y - 62, 4, 0, Math.PI * 2);
+        ctx.fill();
     }
 
     drawGrid(ctx, camera) {
@@ -122,8 +291,9 @@ class World {
         const startX = Math.floor(camera.x / gridSize) * gridSize;
         const startY = Math.floor(camera.y / gridSize) * gridSize;
 
-        ctx.strokeStyle = '#2a2a2a';
+        ctx.strokeStyle = 'rgba(139, 69, 19, 0.1)'; // Subtle brown grid for sand
         ctx.lineWidth = 1;
+        ctx.setLineDash([5, 5]);
 
         // Vertical lines
         for (let x = startX; x < camera.x + ctx.canvas.width; x += gridSize) {
@@ -142,6 +312,8 @@ class World {
             ctx.lineTo(ctx.canvas.width, screenY);
             ctx.stroke();
         }
+
+        ctx.setLineDash([]);
     }
 
     drawBossIndicators(ctx, camera) {

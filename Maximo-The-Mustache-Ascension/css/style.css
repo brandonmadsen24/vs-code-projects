@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #87CEEB 0%, #F0E68C 100%);
     color: #fff;
     overflow: hidden;
 }
@@ -36,32 +36,49 @@ body {
 
 /* Title Screen */
 #title-screen {
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background: linear-gradient(135deg, #87CEEB, #FFD700, #F0E68C);
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 #title-screen h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
-    text-shadow: 0 0 20px #ff6b6b, 0 0 40px #4ecdc4;
+    color: #FF6B6B;
+    text-shadow: 3px 3px 0 #FFD700, 6px 6px 0 #FF8C00, 0 0 30px rgba(255, 107, 107, 0.8);
     animation: glow 2s ease-in-out infinite alternate;
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes glow {
-    from { text-shadow: 0 0 20px #ff6b6b, 0 0 40px #4ecdc4; }
-    to { text-shadow: 0 0 30px #ff6b6b, 0 0 60px #4ecdc4; }
+    from {
+        text-shadow: 3px 3px 0 #FFD700, 6px 6px 0 #FF8C00, 0 0 30px rgba(255, 107, 107, 0.8);
+        transform: scale(1);
+    }
+    to {
+        text-shadow: 3px 3px 0 #FFD700, 6px 6px 0 #FF8C00, 0 0 50px rgba(255, 107, 107, 1);
+        transform: scale(1.02);
+    }
 }
 
 .subtitle {
     font-size: 1.5rem;
     margin-bottom: 3rem;
-    color: #4ecdc4;
+    color: #FF6B6B;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
 }
 
 .credits {
     margin-top: 3rem;
     font-size: 0.9rem;
-    color: #999;
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 1;
 }
 
 .credits p {
@@ -107,12 +124,12 @@ body {
 /* Game Screen */
 #game-screen {
     position: relative;
-    background: #000;
+    background: #87CEEB;
 }
 
 #game-canvas {
     display: block;
-    background: #1a1a1a;
+    background: linear-gradient(180deg, #87CEEB 0%, #F0E68C 100%);
 }
 
 /* HUD */
@@ -128,22 +145,26 @@ body {
 }
 
 .hud-panel {
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid #4ecdc4;
+    background: rgba(255, 248, 220, 0.95);
+    border: 3px solid #FFD700;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 12px;
     pointer-events: all;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: #333;
 }
 
 .hud-panel h3 {
-    color: #ff6b6b;
+    color: #FF6B6B;
     margin-bottom: 0.5rem;
     font-size: 1.2rem;
+    text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.5);
 }
 
 .hud-panel h4 {
-    color: #4ecdc4;
+    color: #FF8C00;
     margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .stat-bar {

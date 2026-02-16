@@ -45,34 +45,65 @@ class CombatSystem {
     }
 
     createAttackParticles(x, y, angle, range) {
-        for (let i = 0; i < 5; i++) {
+        // Cat claw slash effect
+        for (let i = 0; i < 8; i++) {
+            const spreadAngle = angle + Utils.randomFloat(-0.4, 0.4);
+            const distance = range * Utils.randomFloat(0.4, 0.9);
+
             this.particles.push({
-                x: x + Math.cos(angle) * (range * 0.5),
-                y: y + Math.sin(angle) * (range * 0.5),
-                vx: Math.cos(angle + Utils.randomFloat(-0.3, 0.3)) * 4,
-                vy: Math.sin(angle + Utils.randomFloat(-0.3, 0.3)) * 4,
-                life: 20,
-                maxLife: 20,
-                color: '#ff6b6b',
-                size: Utils.randomInt(3, 6)
+                x: x + Math.cos(spreadAngle) * distance,
+                y: y + Math.sin(spreadAngle) * distance,
+                vx: Math.cos(spreadAngle) * 3,
+                vy: Math.sin(spreadAngle) * 3,
+                life: 15,
+                maxLife: 15,
+                color: Utils.randomChoice(['#ff6b6b', '#fff', '#ffd700']),
+                size: Utils.randomInt(4, 8),
+                type: 'slash'
             });
         }
+
+        // Add claw streak effect
+        this.particles.push({
+            x: x,
+            y: y,
+            angle: angle,
+            range: range,
+            life: 8,
+            maxLife: 8,
+            type: 'claw-streak'
+        });
     }
 
     createHitParticles(x, y) {
-        for (let i = 0; i < 10; i++) {
+        // Impact explosion
+        for (let i = 0; i < 15; i++) {
             const angle = Math.random() * Math.PI * 2;
             this.particles.push({
                 x: x,
                 y: y,
-                vx: Math.cos(angle) * Utils.randomFloat(2, 5),
-                vy: Math.sin(angle) * Utils.randomFloat(2, 5),
-                life: 30,
-                maxLife: 30,
-                color: '#ffff00',
-                size: Utils.randomInt(2, 4)
+                vx: Math.cos(angle) * Utils.randomFloat(3, 7),
+                vy: Math.sin(angle) * Utils.randomFloat(3, 7),
+                life: 25,
+                maxLife: 25,
+                color: Utils.randomChoice(['#ffff00', '#ffa500', '#ff6b6b', '#fff']),
+                size: Utils.randomInt(3, 6),
+                type: 'impact'
             });
         }
+
+        // Add "POW!" effect
+        this.particles.push({
+            x: x,
+            y: y - 20,
+            vx: 0,
+            vy: -1,
+            life: 30,
+            maxLife: 30,
+            type: 'text',
+            text: Utils.randomChoice(['POW!', 'SMACK!', 'HIT!', 'MEOW!']),
+            color: '#fff'
+        });
     }
 
     update() {
@@ -94,10 +125,57 @@ class CombatSystem {
             const screenY = p.y - camera.y;
 
             ctx.globalAlpha = p.life / p.maxLife;
-            ctx.fillStyle = p.color;
-            ctx.beginPath();
-            ctx.arc(screenX, screenY, p.size, 0, Math.PI * 2);
-            ctx.fill();
+
+            if (p.type === 'claw-streak') {
+                // Draw claw slash streaks
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 6;
+                ctx.lineCap = 'round';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ff6b6b';
+
+                const numClaws = 3;
+                for (let i = 0; i < numClaws; i++) {
+                    const offset = (i - 1) * 15;
+                    const perpAngle = p.angle + Math.PI / 2;
+
+                    ctx.beginPath();
+                    ctx.moveTo(
+                        screenX + Math.cos(perpAngle) * offset,
+                        screenY + Math.sin(perpAngle) * offset
+                    );
+                    ctx.lineTo(
+                        screenX + Math.cos(perpAngle) * offset + Math.cos(p.angle) * p.range,
+                        screenY + Math.sin(perpAngle) * offset + Math.sin(p.angle) * p.range
+                    );
+                    ctx.stroke();
+                }
+                ctx.shadowBlur = 0;
+            } else if (p.type === 'text') {
+                // Draw text effects
+                ctx.fillStyle = p.color;
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.strokeText(p.text, screenX, screenY);
+                ctx.fillText(p.text, screenX, screenY);
+            } else {
+                // Draw regular particles
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Add glow to impact particles
+                if (p.type === 'impact') {
+                    ctx.shadowBlur = 5;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
             ctx.globalAlpha = 1;
         }
     }

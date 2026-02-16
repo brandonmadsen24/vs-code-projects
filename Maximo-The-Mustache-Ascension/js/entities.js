@@ -39,9 +39,10 @@ class Player extends Entity {
         this.maxHealth = 100;
         this.speed = 4;
         this.attackDamage = 10;
-        this.attackRange = 60;
+        this.attackRange = 90; // Increased for more dynamic combat
         this.attackCooldown = 0;
         this.attackSpeed = 20; // frames between attacks
+        this.animFrame = 0; // For animation
         this.level = 1;
         this.xp = 0;
         this.catnip = 0;
@@ -88,6 +89,9 @@ class Player extends Entity {
 
         // Calculate angle to mouse
         this.angle = Utils.angle(this.x, this.y, this.mouseX, this.mouseY);
+
+        // Update animation frame
+        this.animFrame++;
     }
 
     attack() {
@@ -153,45 +157,138 @@ class Player extends Entity {
         const screenX = this.x - camera.x;
         const screenY = this.y - camera.y;
 
-        // Body (tuxedo cat)
+        ctx.save();
+        ctx.translate(screenX, screenY);
+        ctx.rotate(this.angle);
+
+        // Running animation
+        const bounce = Math.sin(this.animFrame * 0.3) * 2;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath();
+        ctx.ellipse(0, 20, 30, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tail (curled)
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(-20, 0);
+        ctx.quadraticCurveTo(-30, -10, -25, -20);
+        ctx.stroke();
+
+        // Back legs
         ctx.fillStyle = '#000';
         ctx.beginPath();
-        ctx.arc(screenX, screenY, this.radius, 0, Math.PI * 2);
+        ctx.ellipse(-10, 8 + bounce, 8, 12, 0, 0, Math.PI * 2);
         ctx.fill();
-
-        // White chest
         ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.arc(screenX, screenY + 5, this.radius * 0.6, 0, Math.PI * 2);
+        ctx.ellipse(-10, 12 + bounce, 5, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Mustache
-        ctx.strokeStyle = '#333';
+        // Body (tuxedo pattern)
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.ellipse(0, 0 + bounce, 25, 18, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // White chest/belly
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.ellipse(5, 2 + bounce, 15, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Front legs
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.ellipse(15, 8 + bounce, 6, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.ellipse(15, 12 + bounce, 4, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Head
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(25, -5 + bounce, 15, 0, Math.PI * 2);
+        ctx.fill();
+
+        // White muzzle
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.ellipse(30, -2 + bounce, 8, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ears
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.moveTo(20, -15 + bounce);
+        ctx.lineTo(15, -22 + bounce);
+        ctx.lineTo(23, -18 + bounce);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(30, -15 + bounce);
+        ctx.lineTo(35, -22 + bounce);
+        ctx.lineTo(27, -18 + bounce);
+        ctx.fill();
+
+        // Magnificent Mustache!
+        ctx.strokeStyle = '#222';
         ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(screenX - 15, screenY);
-        ctx.lineTo(screenX - 25, screenY - 5);
-        ctx.moveTo(screenX + 15, screenY);
-        ctx.lineTo(screenX + 25, screenY - 5);
+        // Left mustache
+        ctx.moveTo(25, 0 + bounce);
+        ctx.quadraticCurveTo(30, -3 + bounce, 38, -5 + bounce);
+        ctx.moveTo(25, 2 + bounce);
+        ctx.quadraticCurveTo(30, 1 + bounce, 38, 0 + bounce);
+        // Right mustache
+        ctx.moveTo(25, 0 + bounce);
+        ctx.quadraticCurveTo(30, -3 + bounce, 38, -5 + bounce);
         ctx.stroke();
 
-        // Eyes
-        ctx.fillStyle = '#4ecdc4';
+        // Eyes (bright and determined)
+        ctx.fillStyle = '#00ff88';
         ctx.beginPath();
-        ctx.arc(screenX - 8, screenY - 5, 4, 0, Math.PI * 2);
-        ctx.arc(screenX + 8, screenY - 5, 4, 0, Math.PI * 2);
+        ctx.arc(28, -7 + bounce, 3, 0, Math.PI * 2);
+        ctx.arc(34, -7 + bounce, 3, 0, Math.PI * 2);
         ctx.fill();
 
-        // Direction indicator
-        ctx.strokeStyle = '#ff6b6b';
-        ctx.lineWidth = 2;
+        // Pupils
+        ctx.fillStyle = '#000';
         ctx.beginPath();
-        ctx.moveTo(screenX, screenY);
-        ctx.lineTo(
-            screenX + Math.cos(this.angle) * (this.radius + 15),
-            screenY + Math.sin(this.angle) * (this.radius + 15)
-        );
-        ctx.stroke();
+        ctx.arc(29, -7 + bounce, 1.5, 0, Math.PI * 2);
+        ctx.arc(35, -7 + bounce, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nose
+        ctx.fillStyle = '#ff69b4';
+        ctx.beginPath();
+        ctx.moveTo(31, -2 + bounce);
+        ctx.lineTo(29, 0 + bounce);
+        ctx.lineTo(33, 0 + bounce);
+        ctx.fill();
+
+        // Attack indicator (claw slash)
+        if (this.attackCooldown > 15) {
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 4;
+            ctx.globalAlpha = this.attackCooldown / 20;
+            ctx.beginPath();
+            ctx.moveTo(40, -10);
+            ctx.lineTo(55, -5);
+            ctx.moveTo(40, 0);
+            ctx.lineTo(55, 5);
+            ctx.moveTo(40, 10);
+            ctx.lineTo(55, 15);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+        }
+
+        ctx.restore();
 
         // Health bar
         this.drawHealthBar(ctx, screenX, screenY);
@@ -300,20 +397,288 @@ class Enemy extends Entity {
         const screenX = this.x - camera.x;
         const screenY = this.y - camera.y;
 
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(screenX, screenY, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Eyes
-        ctx.fillStyle = '#ff0000';
-        ctx.beginPath();
-        ctx.arc(screenX - this.radius/3, screenY - this.radius/3, 3, 0, Math.PI * 2);
-        ctx.arc(screenX + this.radius/3, screenY - this.radius/3, 3, 0, Math.PI * 2);
-        ctx.fill();
+        if (this.type === 'mouse') {
+            this.drawMouse(ctx, screenX, screenY);
+        } else if (this.type === 'dog') {
+            this.drawDog(ctx, screenX, screenY);
+        } else if (this.type === 'mini-boss') {
+            this.drawMiniBoss(ctx, screenX, screenY);
+        }
 
         // Health bar
         this.drawHealthBar(ctx, screenX, screenY);
+    }
+
+    drawMouse(ctx, x, y) {
+        const angle = this.vx !== 0 || this.vy !== 0 ? Math.atan2(this.vy, this.vx) : 0;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.beginPath();
+        ctx.ellipse(0, 8, 10, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tail
+        ctx.strokeStyle = '#8B4513';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-8, 0);
+        ctx.quadraticCurveTo(-15, 3, -18, -2);
+        ctx.stroke();
+
+        // Body (rat brown)
+        ctx.fillStyle = '#8B4513';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 12, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Head
+        ctx.fillStyle = '#A0522D';
+        ctx.beginPath();
+        ctx.ellipse(10, -2, 8, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ears (large rat ears)
+        ctx.fillStyle = '#CD853F';
+        ctx.beginPath();
+        ctx.ellipse(8, -8, 4, 6, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(12, -8, 4, 6, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyes (beady and red)
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(12, -3, 2, 0, Math.PI * 2);
+        ctx.arc(16, -3, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nose
+        ctx.fillStyle = '#ff69b4';
+        ctx.beginPath();
+        ctx.arc(18, -2, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Whiskers
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(18, -2);
+        ctx.lineTo(25, -4);
+        ctx.moveTo(18, -2);
+        ctx.lineTo(25, 0);
+        ctx.moveTo(18, -2);
+        ctx.lineTo(25, 2);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    drawDog(ctx, x, y) {
+        const angle = this.vx !== 0 || this.vy !== 0 ? Math.atan2(this.vy, this.vx) : 0;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath();
+        ctx.ellipse(0, 18, 25, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tail (wagging)
+        ctx.strokeStyle = '#8B4513';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(-20, 0);
+        ctx.quadraticCurveTo(-28, -8, -25, -15);
+        ctx.stroke();
+
+        // Back legs
+        ctx.fillStyle = '#654321';
+        ctx.beginPath();
+        ctx.ellipse(-12, 12, 8, 14, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body
+        ctx.fillStyle = '#8B4513';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 25, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Spots
+        ctx.fillStyle = '#654321';
+        ctx.beginPath();
+        ctx.arc(-5, -5, 6, 0, Math.PI * 2);
+        ctx.arc(5, 3, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Front legs
+        ctx.fillStyle = '#8B4513';
+        ctx.beginPath();
+        ctx.ellipse(18, 12, 7, 13, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Head
+        ctx.fillStyle = '#A0522D';
+        ctx.beginPath();
+        ctx.ellipse(28, -3, 14, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Snout
+        ctx.fillStyle = '#D2691E';
+        ctx.beginPath();
+        ctx.ellipse(38, 0, 8, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Floppy ears
+        ctx.fillStyle = '#654321';
+        ctx.beginPath();
+        ctx.ellipse(22, -12, 6, 10, -0.5, 0, Math.PI * 2);
+        ctx.ellipse(28, -12, 6, 10, 0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyes (angry)
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(28, -6, 4, 0, Math.PI * 2);
+        ctx.arc(36, -6, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(29, -5, 2.5, 0, Math.PI * 2);
+        ctx.arc(37, -5, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nose
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(42, 0, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Teeth (menacing)
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(38, 4);
+        ctx.lineTo(36, 8);
+        ctx.lineTo(40, 8);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(42, 4);
+        ctx.lineTo(40, 8);
+        ctx.lineTo(44, 8);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    drawMiniBoss(ctx, x, y) {
+        const angle = this.vx !== 0 || this.vy !== 0 ? Math.atan2(this.vy, this.vx) : 0;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        // Larger, meaner dog with armor
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.beginPath();
+        ctx.ellipse(0, 25, 35, 15, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tail
+        ctx.strokeStyle = '#8B0000';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(-30, 0);
+        ctx.quadraticCurveTo(-40, -12, -35, -20);
+        ctx.stroke();
+
+        // Back legs
+        ctx.fillStyle = '#8B0000';
+        ctx.beginPath();
+        ctx.ellipse(-18, 15, 10, 18, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body with armor
+        ctx.fillStyle = '#8B0000';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 35, 22, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Armor plating
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, 28, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Front legs
+        ctx.fillStyle = '#8B0000';
+        ctx.beginPath();
+        ctx.ellipse(25, 15, 9, 17, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Head
+        ctx.fillStyle = '#A0522D';
+        ctx.beginPath();
+        ctx.ellipse(40, -5, 18, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Snout
+        ctx.fillStyle = '#D2691E';
+        ctx.beginPath();
+        ctx.ellipse(52, 0, 10, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ears
+        ctx.fillStyle = '#654321';
+        ctx.beginPath();
+        ctx.moveTo(32, -18);
+        ctx.lineTo(28, -28);
+        ctx.lineTo(36, -20);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(44, -18);
+        ctx.lineTo(48, -28);
+        ctx.lineTo(40, -20);
+        ctx.fill();
+
+        // Eyes (glowing red)
+        ctx.fillStyle = '#ff0000';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(38, -8, 5, 0, Math.PI * 2);
+        ctx.arc(48, -8, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Nose
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(58, 0, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Fangs
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(52, 6);
+        ctx.lineTo(48, 14);
+        ctx.lineTo(54, 14);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(58, 6);
+        ctx.lineTo(54, 14);
+        ctx.lineTo(60, 14);
+        ctx.fill();
+
+        ctx.restore();
     }
 
     drawHealthBar(ctx, x, y) {
@@ -403,39 +768,181 @@ class Boss extends Enemy {
         const screenX = this.x - camera.x;
         const screenY = this.y - camera.y;
 
-        // Boss aura
+        // Boss aura with pulsing effect
+        const pulse = Math.sin(Date.now() * 0.005) * 5;
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 3;
-        ctx.globalAlpha = 0.5;
+        ctx.lineWidth = 4;
+        ctx.globalAlpha = 0.6;
         ctx.beginPath();
-        ctx.arc(screenX, screenY, this.radius + 10, 0, Math.PI * 2);
+        ctx.arc(screenX, screenY, this.radius + 15 + pulse, 0, Math.PI * 2);
         ctx.stroke();
         ctx.globalAlpha = 1;
 
-        // Boss body
+        // Draw specific boss type
+        this.drawBossBody(ctx, screenX, screenY);
+
+        // Boss name with background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(screenX - 80, screenY - this.radius - 35, 160, 20);
         ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(screenX, screenY, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Boss eyes (glowing)
-        ctx.fillStyle = '#ff0000';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#ff0000';
-        ctx.beginPath();
-        ctx.arc(screenX - this.radius/3, screenY - this.radius/4, 6, 0, Math.PI * 2);
-        ctx.arc(screenX + this.radius/3, screenY - this.radius/4, 6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // Boss name
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 16px Courier New';
+        ctx.font = 'bold 14px Courier New';
         ctx.textAlign = 'center';
-        ctx.fillText(this.name, screenX, screenY - this.radius - 20);
+        ctx.fillText(this.name.toUpperCase(), screenX, screenY - this.radius - 20);
 
         // Health bar
         this.drawHealthBar(ctx, screenX, screenY);
+    }
+
+    drawBossBody(ctx, x, y) {
+        ctx.save();
+        ctx.translate(x, y);
+
+        // All bosses are massive legendary dogs
+        const scale = this.radius / 60; // Scale based on boss size
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.beginPath();
+        ctx.ellipse(0, 40 * scale, 50 * scale, 20 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tail (epic and flowing)
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 12 * scale;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-40 * scale, 0);
+        ctx.quadraticCurveTo(-60 * scale, -20 * scale, -50 * scale, -35 * scale);
+        ctx.stroke();
+
+        // Back legs (powerful)
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.ellipse(-25 * scale, 20 * scale, 15 * scale, 25 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body (massive and muscular)
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 50 * scale, 30 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Legendary markings
+        if (this.bossType === 'golden-retriever') {
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.ellipse(0, -10 * scale, 30 * scale, 20 * scale, 0, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (this.bossType === 'great-hound') {
+            // White fur patches
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(-10 * scale, -5 * scale, 12 * scale, 0, Math.PI * 2);
+            ctx.arc(15 * scale, 5 * scale, 10 * scale, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (this.bossType === 'alley-shadow') {
+            // Dark shadowy wisps
+            ctx.fillStyle = 'rgba(25, 25, 112, 0.7)';
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.arc((i * 15 - 15) * scale, (i * 5 - 10) * scale, 8 * scale, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Front legs
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.ellipse(35 * scale, 20 * scale, 12 * scale, 24 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Head (fierce and legendary)
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.ellipse(55 * scale, -8 * scale, 25 * scale, 22 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Snout
+        const snoutColor = this.bossType === 'vacuum-titan' ? '#888' : this.color;
+        ctx.fillStyle = snoutColor;
+        ctx.beginPath();
+        ctx.ellipse(72 * scale, 0, 15 * scale, 12 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ears (different styles per boss)
+        ctx.fillStyle = this.color;
+        if (this.bossType === 'great-hound') {
+            // Standing ears (wolf-like)
+            ctx.beginPath();
+            ctx.moveTo(45 * scale, -25 * scale);
+            ctx.lineTo(40 * scale, -40 * scale);
+            ctx.lineTo(50 * scale, -30 * scale);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(60 * scale, -25 * scale);
+            ctx.lineTo(65 * scale, -40 * scale);
+            ctx.lineTo(55 * scale, -30 * scale);
+            ctx.fill();
+        } else {
+            // Floppy ears
+            ctx.beginPath();
+            ctx.ellipse(42 * scale, -20 * scale, 10 * scale, 16 * scale, -0.5, 0, Math.PI * 2);
+            ctx.ellipse(58 * scale, -20 * scale, 10 * scale, 16 * scale, 0.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Eyes (glowing and menacing)
+        ctx.fillStyle = '#ff0000';
+        ctx.shadowBlur = 15 * scale;
+        ctx.shadowColor = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(50 * scale, -12 * scale, 7 * scale, 0, Math.PI * 2);
+        ctx.arc(65 * scale, -12 * scale, 7 * scale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Pupils
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(52 * scale, -11 * scale, 3 * scale, 0, Math.PI * 2);
+        ctx.arc(67 * scale, -11 * scale, 3 * scale, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Nose
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(80 * scale, 0, 5 * scale, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Legendary fangs
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(72 * scale, 8 * scale);
+        ctx.lineTo(68 * scale, 18 * scale);
+        ctx.lineTo(74 * scale, 18 * scale);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(80 * scale, 8 * scale);
+        ctx.lineTo(76 * scale, 18 * scale);
+        ctx.lineTo(82 * scale, 18 * scale);
+        ctx.fill();
+
+        // Collar/armor (for some bosses)
+        if (this.bossType === 'vacuum-titan') {
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 5 * scale;
+            ctx.beginPath();
+            ctx.arc(40 * scale, 0, 20 * scale, 0, Math.PI * 2);
+            ctx.stroke();
+        } else if (this.bossType === 'golden-retriever') {
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 6 * scale;
+            ctx.beginPath();
+            ctx.arc(40 * scale, 5 * scale, 18 * scale, -Math.PI / 4, Math.PI * 1.25);
+            ctx.stroke();
+        }
+
+        ctx.restore();
     }
 
     drawHealthBar(ctx, x, y) {
