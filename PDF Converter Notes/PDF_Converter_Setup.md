@@ -22,13 +22,18 @@ VS Code Projects/
 
 ### Running the Converter
 
-**Option 1: Full Path (works immediately)**
-```bash
-/c/Users/madse/AppData/Local/Programs/Python/Python312/python.exe pdf_to_text_converter.py
+**Option 1: PowerShell Full Path (works immediately)** ⭐ RECOMMENDED
+```powershell
+C:\Users\madse\AppData\Local\Programs\Python\Python312\python.exe pdf_to_text_converter.py
 ```
 
-**Option 2: Short Command (after restarting terminal)**
-```bash
+**Option 2: Using py launcher (usually works right away)**
+```powershell
+py pdf_to_text_converter.py
+```
+
+**Option 3: Short Command (after restarting terminal)**
+```powershell
 python pdf_to_text_converter.py
 ```
 
@@ -46,8 +51,8 @@ winget install -e --id Python.Python.3.12 --source winget --accept-package-agree
 ```
 
 ### 2. Install PyPDF2
-```bash
-/c/Users/madse/AppData/Local/Programs/Python/Python312/python.exe -m pip install PyPDF2
+```powershell
+C:\Users\madse\AppData\Local\Programs\Python\Python312\python.exe -m pip install PyPDF2
 ```
 
 ## Script Features
@@ -77,8 +82,8 @@ Each text file contains:
 - Or use the full path to Python executable
 
 ### Module not found errors
-```bash
-/c/Users/madse/AppData/Local/Programs/Python/Python312/python.exe -m pip install [module_name]
+```powershell
+C:\Users\madse\AppData\Local\Programs\Python\Python312\python.exe -m pip install [module_name]
 ```
 
 ### Unicode errors on Windows
