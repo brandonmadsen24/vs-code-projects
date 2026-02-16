@@ -1,4 +1,13 @@
-# PDF files and converted text files
+# PDF files
+*.pdf
+
+# Text files
+*.txt
+
+# Claude settings
+.claude/
+
+# PDF Converter specific
 PDF Converter/*.pdf
 PDF Converter/*.txt
 
