@@ -1,0 +1,44 @@
+--- Page 1 ---
+Maximo: The Mustache Ascension
+Game Design Document
+
+1. Project Overview
+Maximo: The Mustache Ascension is a third-person open-world action RPG centered on Maximo, a
+confident tuxedo cat with legendary mustache energy. The game combines exploration, combat,
+XP progression, and boss battles in a stylized urban environment.
+
+2. Core Gameplay Loop
+• Explore open-world environments
+• Defeat enemies (Mice, Dogs, Mini-Bosses)
+• Collect Catnip for XP and upgrades
+• Purchase gear and cosmetics in shops
+• Unlock new areas and boss encounters
+
+3. Enemy Types
+• Mice — Low health, fast, swarm behavior, low XP reward.
+• Dogs — High health, aggressive AI, territorial behavior, high XP reward.
+• Mini-Bosses — Unique mechanics, mid-tier progression blockers.
+• World Bosses — Large-scale encounters with multiple combat phases.
+
+4. Main Bosses (Five Required)
+• The Sewer King — Mutated rat controlling underground territory.
+• The Golden Retriever Warlord — Heavy charge and shockwave attacks.
+• The Alley Shadow — Stealth-based rival cat with teleport phases.
+• The Vacuum Titan — Mechanical boss with suction-based mechanics.
+• The Great Hound of the North — Final multi-phase arena boss.
+
+--- Page 2 ---
+
+5. Progression System
+• Catnip functions as XP and upgrade currency.
+• Skill Trees: Agility, Strength, Chaos.
+• Level Cap: 50 (Initial Release).
+• Unlockable cosmetic and combat upgrades via shops.
+
+6. Technical Goals
+Build modular gameplay systems including movement, combat logic, AI behavior trees, XP tracking,
+inventory systems, and scalable world design architecture.
+
+7. Long-Term Vision
+Expand Maximo into a scalable IP including potential future updates, downloadable content,
+cosmetic monetization, and extended lore-driven expansions.

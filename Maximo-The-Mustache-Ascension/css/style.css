@@ -1,0 +1,360 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    overflow: hidden;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Screens */
+.screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Title Screen */
+#title-screen {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    text-align: center;
+}
+
+#title-screen h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px #ff6b6b, 0 0 40px #4ecdc4;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 20px #ff6b6b, 0 0 40px #4ecdc4; }
+    to { text-shadow: 0 0 30px #ff6b6b, 0 0 60px #4ecdc4; }
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 3rem;
+    color: #4ecdc4;
+}
+
+.credits {
+    margin-top: 3rem;
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.credits p {
+    margin: 0.5rem 0;
+}
+
+/* Buttons */
+.game-btn {
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    font-family: 'Courier New', monospace;
+    background: #ff6b6b;
+    color: #fff;
+    border: 3px solid #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.game-btn:hover {
+    background: #fff;
+    color: #ff6b6b;
+    transform: scale(1.1);
+}
+
+.small-btn {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    font-family: 'Courier New', monospace;
+    background: #4ecdc4;
+    color: #fff;
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.small-btn:hover {
+    background: #fff;
+    color: #4ecdc4;
+}
+
+/* Game Screen */
+#game-screen {
+    position: relative;
+    background: #000;
+}
+
+#game-canvas {
+    display: block;
+    background: #1a1a1a;
+}
+
+/* HUD */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.hud-panel {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #4ecdc4;
+    padding: 1rem;
+    border-radius: 8px;
+    pointer-events: all;
+}
+
+.hud-panel h3 {
+    color: #ff6b6b;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.hud-panel h4 {
+    color: #4ecdc4;
+    margin-bottom: 0.5rem;
+}
+
+.stat-bar {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+    gap: 0.5rem;
+}
+
+.stat-bar label {
+    min-width: 30px;
+    font-weight: bold;
+}
+
+.bar {
+    width: 200px;
+    height: 20px;
+    background: #333;
+    border: 2px solid #666;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    transition: width 0.3s;
+}
+
+.bar-fill.hp {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+}
+
+.bar-fill.xp {
+    background: linear-gradient(90deg, #4ecdc4, #44a8e8);
+}
+
+.stat-info p {
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+}
+
+#combat-info {
+    text-align: right;
+}
+
+#boss-indicator {
+    color: #ff6b6b;
+    font-weight: bold;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Panels */
+.panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    max-height: 80vh;
+    background: rgba(0, 0, 0, 0.95);
+    border: 3px solid #4ecdc4;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.panel-header {
+    background: #4ecdc4;
+    color: #000;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #000;
+    font-weight: bold;
+}
+
+.close-btn:hover {
+    color: #ff6b6b;
+}
+
+.panel-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: calc(80vh - 80px);
+}
+
+#inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.inventory-slot {
+    width: 80px;
+    height: 80px;
+    background: #222;
+    border: 2px solid #444;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.inventory-slot:hover {
+    border-color: #4ecdc4;
+    transform: scale(1.05);
+}
+
+.skill-trees {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.skill-tree {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.skill-upgrade {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+    background: #333;
+    color: #fff;
+    border: 2px solid #666;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Courier New', monospace;
+}
+
+.skill-upgrade:hover {
+    background: #4ecdc4;
+    border-color: #4ecdc4;
+    color: #000;
+}
+
+.skill-upgrade.unlocked {
+    background: #4ecdc4;
+    color: #000;
+    border-color: #4ecdc4;
+}
+
+/* Overlays */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+.overlay h2 {
+    font-size: 3rem;
+    color: #ff6b6b;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px #ff6b6b;
+}
+
+.overlay p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #4ecdc4;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #title-screen h1 {
+        font-size: 2rem;
+    }
+
+    .panel {
+        width: 90%;
+    }
+
+    #hud {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .bar {
+        width: 150px;
+    }
+}

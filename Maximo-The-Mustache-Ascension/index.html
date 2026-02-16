@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Maximo: The Mustache Ascension</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="title-screen" class="screen active">
+            <h1>MAXIMO: THE MUSTACHE ASCENSION</h1>
+            <p class="subtitle">A Tuxedo Cat's Epic Journey</p>
+            <button id="start-btn" class="game-btn">START GAME</button>
+            <div class="credits">
+                <p>Controls: WASD - Move | SPACE - Attack | E - Interact | I - Inventory</p>
+                <p>Mouse: Aim & Attack Direction</p>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <canvas id="game-canvas"></canvas>
+
+            <!-- HUD -->
+            <div id="hud">
+                <div class="hud-panel" id="stats-panel">
+                    <h3>MAXIMO</h3>
+                    <div class="stat-bar">
+                        <label>HP:</label>
+                        <div class="bar"><div id="health-bar" class="bar-fill hp"></div></div>
+                        <span id="health-text">100/100</span>
+                    </div>
+                    <div class="stat-bar">
+                        <label>XP:</label>
+                        <div class="bar"><div id="xp-bar" class="bar-fill xp"></div></div>
+                        <span id="xp-text">0/100</span>
+                    </div>
+                    <div class="stat-info">
+                        <p>Level: <span id="level-display">1</span></p>
+                        <p>Catnip: <span id="catnip-display">0</span></p>
+                    </div>
+                </div>
+
+                <div class="hud-panel" id="skills-panel">
+                    <h4>Skills</h4>
+                    <p>Agility: <span id="agility-stat">0</span></p>
+                    <p>Strength: <span id="strength-stat">0</span></p>
+                    <p>Chaos: <span id="chaos-stat">0</span></p>
+                    <button id="skills-btn" class="small-btn">Upgrade (K)</button>
+                </div>
+
+                <div class="hud-panel" id="combat-info">
+                    <p id="enemy-counter">Enemies: 0</p>
+                    <p id="boss-indicator" class="hidden">⚠️ BOSS NEARBY</p>
+                </div>
+            </div>
+
+            <!-- Inventory Panel -->
+            <div id="inventory-panel" class="panel hidden">
+                <div class="panel-header">
+                    <h2>Inventory</h2>
+                    <button class="close-btn">✕</button>
+                </div>
+                <div class="panel-content">
+                    <div id="inventory-grid"></div>
+                    <div id="inventory-stats">
+                        <h3>Equipment Bonus</h3>
+                        <p>Attack: +<span id="bonus-attack">0</span></p>
+                        <p>Defense: +<span id="bonus-defense">0</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skill Tree Panel -->
+            <div id="skill-panel" class="panel hidden">
+                <div class="panel-header">
+                    <h2>Skill Tree</h2>
+                    <button class="close-btn">✕</button>
+                </div>
+                <div class="panel-content">
+                    <p>Skill Points: <span id="skill-points">0</span></p>
+                    <div class="skill-trees">
+                        <div class="skill-tree">
+                            <h3>⚡ Agility</h3>
+                            <button class="skill-upgrade" data-skill="agility">Speed Boost</button>
+                            <button class="skill-upgrade" data-skill="agility">Dodge Mastery</button>
+                        </div>
+                        <div class="skill-tree">
+                            <h3>💪 Strength</h3>
+                            <button class="skill-upgrade" data-skill="strength">Claw Strike</button>
+                            <button class="skill-upgrade" data-skill="strength">Iron Fur</button>
+                        </div>
+                        <div class="skill-tree">
+                            <h3>🌀 Chaos</h3>
+                            <button class="skill-upgrade" data-skill="chaos">Catnip Frenzy</button>
+                            <button class="skill-upgrade" data-skill="chaos">Nine Lives</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="gameover-screen" class="overlay hidden">
+                <h2>YOU DIED</h2>
+                <p>The mustache lives on...</p>
+                <button id="respawn-btn" class="game-btn">RESPAWN</button>
+            </div>
+
+            <!-- Boss Defeated Screen -->
+            <div id="victory-screen" class="overlay hidden">
+                <h2>BOSS DEFEATED!</h2>
+                <p id="victory-message"></p>
+                <button id="continue-btn" class="game-btn">CONTINUE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load game modules -->
+    <script src="js/utils.js"></script>
+    <script src="js/entities.js"></script>
+    <script src="js/combat.js"></script>
+    <script src="js/progression.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
