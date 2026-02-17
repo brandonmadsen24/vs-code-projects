@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caption Lab - Maximo Content Studio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Header -->
+        <header id="app-header">
+            <h1>🐱 Caption Lab</h1>
+            <button id="drafts-btn" class="icon-btn">📁 Drafts (0)</button>
+        </header>
+
+        <!-- Upload Screen -->
+        <div id="upload-screen" class="screen active">
+            <div class="upload-zone">
+                <div id="drop-area" class="drop-area">
+                    <input type="file" id="file-input" accept="image/*,video/mp4" hidden>
+                    <div class="drop-prompt">
+                        <span class="icon">📸</span>
+                        <p>Drag & drop media or click to upload</p>
+                        <small>Images: jpg, png, webp | Videos: mp4</small>
+                    </div>
+                    <div id="media-preview" class="media-preview hidden">
+                        <!-- Dynamic preview inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Context Form -->
+            <div id="context-form" class="context-form">
+                <div class="form-section">
+                    <label>Platforms</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="platform" value="instagram" checked> Instagram</label>
+                        <label><input type="checkbox" name="platform" value="tiktok" checked> TikTok</label>
+                        <label><input type="checkbox" name="platform" value="facebook"> Facebook</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label>Post Type</label>
+                    <select name="postType">
+                        <option value="video">Video</option>
+                        <option value="photo">Photo</option>
+                        <option value="meme">Meme</option>
+                    </select>
+                </div>
+
+                <div class="form-section">
+                    <label>Series (Optional)</label>
+                    <select name="series">
+                        <option value="">None</option>
+                        <option value="SteveHarveyMustache">Steve Harvey Mustache</option>
+                        <option value="MrMonopoly">Mr. Monopoly</option>
+                        <option value="PokerFace">Poker Face</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="number" name="seriesDay" placeholder="Day # (optional)" min="1">
+                </div>
+
+                <div class="form-section">
+                    <label>Tone</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="tone" value="funny" checked> Funny</label>
+                        <label><input type="checkbox" name="tone" value="wholesome"> Wholesome</label>
+                        <label><input type="checkbox" name="tone" value="chaotic"> Chaotic</label>
+                        <label><input type="checkbox" name="tone" value="sarcastic"> Sarcastic</label>
+                        <label><input type="checkbox" name="tone" value="inspirational"> Inspirational</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label>Call to Action (Optional)</label>
+                    <select name="cta">
+                        <option value="">None</option>
+                        <option value="comment">Comment</option>
+                        <option value="follow">Follow</option>
+                        <option value="rate">Rate</option>
+                        <option value="share">Share</option>
+                    </select>
+                </div>
+
+                <div class="form-section">
+                    <label>Notes</label>
+                    <textarea name="notes" placeholder="What's happening? Maximo's plotting something... mustache looks epic today..." rows="3"></textarea>
+                </div>
+
+                <div class="form-section">
+                    <label>Constraints</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="constraint" value="noCringe" checked> No cringe</label>
+                        <label><input type="checkbox" name="constraint" value="keepShort" checked> Keep it short</label>
+                        <label><input type="checkbox" name="constraint" value="spacedHashtags"> Spaced hashtags</label>
+                        <label><input type="checkbox" name="constraint" value="respectful" checked> Respectful</label>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="primary-btn" disabled>✨ Generate Suggestions</button>
+                <div id="loading-indicator" class="loading-indicator hidden">
+                    <div class="spinner"></div>
+                    <p>Generating epic content...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-header">
+                <button id="back-btn" class="secondary-btn">← Back</button>
+                <button id="save-draft-btn" class="primary-btn">💾 Save Draft</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="onscreen">On-Screen Text</button>
+                <button class="tab" data-tab="captions">Captions</button>
+                <button class="tab" data-tab="hashtags">Hashtags</button>
+                <button class="tab" data-tab="audio">Trending Audio</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <div id="onscreen-tab" class="tab-panel active">
+                    <!-- Dynamically populated -->
+                </div>
+                <div id="captions-tab" class="tab-panel">
+                    <!-- Dynamically populated -->
+                </div>
+                <div id="hashtags-tab" class="tab-panel">
+                    <!-- Dynamically populated -->
+                </div>
+                <div id="audio-tab" class="tab-panel">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Drafts Panel (overlay) -->
+        <div id="drafts-panel" class="panel hidden">
+            <div class="panel-header">
+                <h2>Saved Drafts</h2>
+                <button class="close-btn">✕</button>
+            </div>
+            <div class="panel-content">
+                <div id="drafts-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/media-handler.js"></script>
+    <script src="js/form-manager.js"></script>
+    <script src="js/ai-agents.js"></script>
+    <script src="js/results-manager.js"></script>
+    <script src="js/draft-manager.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
